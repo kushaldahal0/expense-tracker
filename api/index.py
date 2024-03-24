@@ -1,36 +1,84 @@
-from flask import Flask, render_template, request
-import tensorflow as tf
-import numpy as np
-
+from flask import Flask, render_template, request, redirect, url_for
+from flask_mysqldb import MySQL
+from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
 
 app = Flask(__name__)
-
-# model = tf.keras.models.load_model('models/modell.tf')
-model = tf.saved_model.load('tfmodel/my_model94')
-
-categs = {0: 'sadness', 1: 'joy', 2: 'love', 3: 'anger', 4: 'fear', 5: 'surprise'}
-batch_size = 32
-def predict(text):
-  text_slice  = tf.data.Dataset.from_tensor_slices([text])
-  prefetched = text_slice.batch(batch_size).prefetch(tf.data.AUTOTUNE)
-  res = model.predict(prefetched)
-  # print(res)
-  probabilities = np.exp(res) / np.sum(np.exp(res), axis=1, keepdims=True)
-  predicted_class_index = np.argmax(probabilities)
-  return(categs[predicted_class_index])
-
-def res(text):
-    return f"<p class= 'text-6xl text-white sm:text-xl'>Emotion :<br>{predict(text)}<br> Text :<br>{text} </p>"
+# app.config['SECRET_KEY'] = 'kd'
+# app.config['MYSQL_HOST'] = 'localhost'
+# app.config['MYSQL_USER'] = 'admin'
+# app.config['MYSQL_PASSWORD'] = 'admin123'
+# app.config['MYSQL_DB'] = 'expense_tracker'
+#
+# mysql = MySQL(app)
+# login_manager = LoginManager(app)
+# login_manager.login_view = 'home'
+#
+# class User(UserMixin):
+#     pass
+#
+# @login_manager.user_loader
+# def load_user(user_id):
+#     # Connect to MySQL database
+#     cur = mysql.connection.cursor()
+#
+#     # Execute a query to fetch user information based on user_id
+#     cur.execute("SELECT * FROM users WHERE id = %s", (user_id,))
+#     user_data = cur.fetchone()
+#
+#     # Close the cursor
+#     cur.close()
+#
+#     if user_data:
+#         # Create a User object using the fetched user data
+#         user = User()
+#         user.id = user_data['id']
+#         # Assign other attributes of the user as needed
+#         return user
+#     else:
+#         return None
 
 
 @app.route('/', methods=['GET', 'POST'])
-def hello():
+# @login_required
+def home():
+    # Fetch expenses for current user from database
+    # cur = mysql.connection.cursor()
+    # cur.execute("SELECT * FROM expenses WHERE user_id = %s", (current_user.id,))
+    # expenses = cur.fetchall()
+    # cur.close()
+    expenses = ''
     if request.method == 'POST':
-        text = request.form['text']
-        result = res(text)
-        return render_template('index.html', res=result)
-    else:
-        return render_template('index.html',  res='')
+        date = request.form['date']
+        description = request.form['description']
+        amount = request.form['amount']
+        expenses = f"date: {date} des: {description} amt: {amount}"
+    return render_template('home.html', exp=expenses)
+
+
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    registered = ''
+    error = ''
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+        c_password = request.form['c_password']
+        if c_password != password:
+            error = 'password did not match'
+            c_password = ''
+        registered = f"username : {username} password : {c_password}"
+    return render_template('register.html', registered=registered, error=error)
+
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    logged = ''
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+        logged = f"username : {username} password : {password}"
+    return render_template('login.html', logged=logged)
+
 
 if __name__ == '__main__':
     app.run(debug=False)
