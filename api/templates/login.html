@@ -4,44 +4,24 @@
     <meta charset="UTF-8">
     <title>Login-Expense Tracker</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="icon" href= "{{ url_for('static', filename='logo.png') }}" type="image/x-icon">
 </head>
 <body>
-    <!--
-  This example requires some changes to your config:
-
-  ```
-  // tailwind.config.js
-  module.exports = {
-    // ...
-    plugins: [
-      // ...
-      require('@tailwindcss/forms'),
-    ],
-  }
-  ```
--->
-<!--
-  This example requires updating your template:
-
-  ```
-  <html class="h-full bg-white">
-  <body class="h-full">
-  ```
--->
     <div class="lg:flex lg:items-center lg:justify-between">
   <div class="min-w-0 flex-1">
-    <h2 class="text-2xl font-bold leading-7 text-gray-900 sm:truncate sm:text-3xl sm:tracking-tight">Expense Tracker</h2>
+    <a href="{{  url_for('home') }}" ><h2 class="text-2xl font-bold leading-7 text-gray-900 sm:truncate sm:text-3xl sm:tracking-tight">Expense Tracker</h2></a>
     </div>
   </div>
 
 <div class="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
   <div class="sm:mx-auto sm:w-full sm:max-w-sm">
-      {% if message %}
-        <p>{{ message }}</p>
-    {% endif %}
-
-    <img class="mx-auto h-10 w-auto" src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600" alt="Your Company">
+    <img class="mx-auto h-10 w-auto" src="{{ url_for('static', filename='logo.png') }}" alt="Your Company">
     <h2 class="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">Sign in to your account</h2>
+    <div class="flex min-h-full flex-col justify-center">
+        {% if message %}
+            <p class="text-red-500 text-center">{{ message }}</p>
+        {% endif %}
+    </div>
   </div>
 
   <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">

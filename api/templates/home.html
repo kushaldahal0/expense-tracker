@@ -5,19 +5,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Expense Tracker - Home</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="icon" href= "{{ url_for('static', filename='logo.png') }}" type="image/x-icon">
 </head>
 <body>
 <div class="lg:flex lg:items-center lg:justify-between">
   <div class="min-w-0 flex-1">
-    <h2 class="text-2xl font-bold leading-7 text-gray-900 sm:truncate sm:text-3xl sm:tracking-tight">Expense Tracker</h2>
+    <a href="{{  url_for('home') }}" ><h2 class="text-2xl font-bold leading-7 text-gray-900 sm:truncate sm:text-3xl sm:tracking-tight">Expense Tracker</h2></a>
     </div>
   </div>
   <div class="flex items-center justify-center flex-col">
     <h3 class="text-2xl font-bold leading-7 text-gray-900 sm:truncate sm:text-3xl sm:tracking-tight">Expenses</h3>
     <ul>
- {#        {% for expense in expenses %}#}
-{#            <li>{{ expense.date }} - {{ expense.description }}: ${{ expense.amount }}</li>#}
-{#        {% endfor %}#}
+        {% if expenses %}
+          {% for expense in expenses %}
+            <li>{{ expense.date }} - {{ expense.description }}: ${{ expense.amount }}</li>
+          {% endfor %}
+        {% endif %}
     </ul>
 
 
@@ -39,7 +42,7 @@
         </form>
 
 {#    <h4 class="text-2xl font-bold leading-7 text-gray-900 sm:truncate sm:text-3xl sm:tracking-tight">Logout</h4>#}
-         <form action="" method="post">
+         <form action="{{ url_for('logout') }}" method="post">
  {#  <form action="{{ url_for('logout') }}" method="post">#}
             <button class=" text-l bg-red-500 text-white rounded m-3 p-2" type="submit">Logout</button>
         </form>
