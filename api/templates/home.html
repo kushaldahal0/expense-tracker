@@ -19,7 +19,7 @@
         {% if expenses %}
           {% for expense in expenses %}
             <li class="p-1 m-1 shadow-xl">
-                {{ expense.user_id }}..{{ expense.id }}. {{ expense.date }} -- {{ expense.description }} : ${{ expense.amount }}
+                {{ expense.date }} -- {{ expense.description }} : ${{ expense.amount }}
                 <div class="flex items-center justify-between">
                     <form action="{{ url_for('update')}}" method="get">
                         <input type="hidden" name="expense_id" value="{{ expense.id }}">
