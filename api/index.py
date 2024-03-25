@@ -153,6 +153,55 @@ def login():
     return render_template('login.html', message=message)
 
 
+@app.route('/update', methods=['POST', 'GET'])
+def update():
+    if request.method == 'POST':
+        expense_id = request.form['expense_id']
+        new_date = request.form["date"]
+        new_description = request.form['description']
+        new_amount = request.form['amount']
+
+        try:
+            cur = mysql.connection.cursor()
+            query = '''UPDATE expenses 
+                           SET date = %s, description = %s, amount = %s 
+                           WHERE id = %s'''
+            cur.execute(query, (new_date, new_description, new_amount, expense_id))
+            mysql.connection.commit()
+            cur.close()
+            return redirect(url_for('home'))
+        except Exception as e:
+            return f"An error occurred: {str(e)}"
+
+    # Handle GET method for rendering the update form
+    else:
+        expense_id = request.args.get('expense_id')
+        user_id = request.args.get('user_id')
+        cur = mysql.connection.cursor()
+        cur.execute("SELECT * FROM expenses WHERE user_id = %s AND id = %s", (user_id, expense_id))
+        expense = cur.fetchone()
+        cur.close()
+        if expense:
+            return render_template('update.html', expense_id=expense_id, expense=expense)
+        else:
+            return "Else block Expense not found"
+
+# Route for deleting an expense
+@app.route('/delete', methods=['POST'])
+def delete():
+    expense_id = request.form.get('expense_id')
+    try:
+        cur = mysql.connection.cursor()
+        query = '''DELETE FROM expenses WHERE id = %s '''
+        cur.execute(query, (expense_id,))
+        mysql.connection.commit()
+        cur.close()
+        return redirect(url_for('home'))
+    except Exception as e:
+        # Handle the error, for example:
+        return f"An error occurred: {str(e)}"
+
+
 @app.route('/logout', methods=['POST'])
 @login_required
 def logout():
@@ -162,5 +211,5 @@ def logout():
 
 
 if __name__ == '__main__':
-    app.run(debug=False)
+    app.run(debug=True)
 

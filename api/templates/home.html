@@ -18,7 +18,20 @@
     <ul>
         {% if expenses %}
           {% for expense in expenses %}
-            <li>{{ expense.date }} - {{ expense.description }}: ${{ expense.amount }}</li>
+            <li class="p-1 m-1 shadow-xl">
+                {{ expense.user_id }}..{{ expense.id }}. {{ expense.date }} -- {{ expense.description }} : ${{ expense.amount }}
+                <div class="flex items-center justify-between">
+                    <form action="{{ url_for('update')}}" method="get">
+                        <input type="hidden" name="expense_id" value="{{ expense.id }}">
+                        <input type="hidden" name="user_id" value="{{ expense.user_id }}">
+                        <button class="bg-blue-500 text-white rounded p-1 text-sm" type="submit" name="update">Update</button>
+                    </form>
+                    <form action="{{ url_for('delete')}}" method="POST">
+                        <input type="hidden" name="expense_id" value="{{ expense.id }}">
+                        <button class="bg-red-500 text-white rounded p-1 text-sm" type="submit" name="delete">Delete</button>
+                    </form>
+                </div>
+            </li>
           {% endfor %}
         {% endif %}
     </ul>

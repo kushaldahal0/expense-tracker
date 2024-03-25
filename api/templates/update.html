@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Expense Tracker - Home</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="icon" href= "{{ url_for('static', filename='logo.png') }}" type="image/x-icon">
+</head>
+<body>
+<div class="lg:flex lg:items-center lg:justify-between">
+  <div class="min-w-0 flex-1">
+    <a href="{{  url_for('home') }}" ><h2 class="text-2xl font-bold leading-7 text-gray-900 sm:truncate sm:text-3xl sm:tracking-tight">Expense Tracker</h2></a>
+    </div>
+  </div>
+  <div class="flex items-center justify-center flex-col">
+        <h3 class="text-2xl font-bold leading-7 text-gray-900 sm:truncate sm:text-3xl sm:tracking-tight">Update Expense</h3>
+        <form action="{{ url_for('update') }}" method="post">
+            <input type="hidden" name="expense_id" value="{{ expense.id }}">
+            <input type="hidden" name="user_id" value="{{ expense.user_id }}">
+            <label for="date">Date:</label>
+            <input class="p-1 m-1 shadow-xl" type="date" id="date" name="date" placeholder="{{ expense.date }}" required><br>
+            <label for="description">Description:</label>
+            <input class="p-1 m-1 shadow-xl" type="text" id="description" name="description" placeholder="{{ expense.description }}" required><br>
+            <label for="amount">Amount:</label>
+            <input class="p-1 m-1 shadow-xl" type="number" id="amount" name="amount" step="0.01" placeholder="{{ expense.amount }}" required><br>
+            <button class='text-l bg-blue-500 text-white rounded p-2 m-3 flex items-center justify-center' type="submit">Update</button>
+        </form>
+</div>
+</body>
+</html>
